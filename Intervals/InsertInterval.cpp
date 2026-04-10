@@ -7,35 +7,35 @@ using namespace std;
 class Solution {
 public:
 
-    bool overlap(vector<int>Interval, vector<int> newInterval){
-        
-        return (newInterval[0]>=Interval[0])&&(newInterval[0]<=Interval[1])
-        ? true:false;
+    bool overlap(vector<int> Interval, vector<int> newInterval){
+        return (Interval[0] <= newInterval[1] && newInterval[0] <= Interval[1]);
     }
-    vector<vector<int>> merge(vector<vector<int>> intervals){
 
-        return {{intervals[0][0],intervals[intervals.size()-1][1]}};
+    vector<int> merge(vector<int> a, vector<int> b){
+        return {min(a[0], b[0]), max(a[1], b[1])};
     }
 
     vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
-        int length = intervals.size();
-        vector<vector<int>> v1;
+        
         intervals.push_back(newInterval);
-        sort(intervals.begin(),intervals.end());
-        for(int i=0; i<length;i++){
-            if(overlap(intervals[i],newInterval)){
-                v1 = merge(intervals);
-            }
-            else{
-                return intervals;
+        sort(intervals.begin(), intervals.end());
+
+        vector<vector<int>> result;
+        vector<int> current = intervals[0];
+
+        for(int i = 1; i < intervals.size(); i++){
+            if(overlap(current, intervals[i])){
+                current = merge(current, intervals[i]);
+            } else {
+                result.push_back(current);
+                current = intervals[i];
             }
         }
 
-        return {{}};
-
+        result.push_back(current);
+        return result;
     }
 };
-
 
 
 int main(){
